@@ -1,10 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ID3 Decision Tree</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&family=Martian+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-$END$
+
+  <header>
+    <div class="logo">ID3<span>.</span></div>
+    <p class="tagline">Decision Tree Generator</p>
+    <nav class="site-nav">
+      <a href="/"       class="nav-link active">App</a>
+      <a href="/theory" class="nav-link">Theory</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- UPLOAD -->
+    <section class="panel upload-panel" id="uploadPanel">
+      <div class="panel-header">
+        <span class="panel-label">01 — Upload</span>
+        <span class="panel-status" id="uploadStatus">WAITING</span>
+      </div>
+      <div class="panel-body">
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-icon">↑</div>
+          <p>Drag & drop CSV file here</p>
+          <span>or</span>
+          <label class="file-btn">
+            Browse file
+            <input type="file" id="fileInput" accept=".csv" hidden />
+          </label>
+          <div class="file-name" id="fileName">No file selected</div>
+        </div>
+
+        <div class="target-row">
+          <label>Target column</label>
+          <select id="targetSelect" disabled>
+            <option value="">— upload file first —</option>
+          </select>
+        </div>
+
+        <div class="target-row">
+          <label>Test split</label>
+          <select id="splitSelect">
+            <option value="0.1">90 / 10</option>
+            <option value="0.2" selected>80 / 20</option>
+            <option value="0.25">75 / 25</option>
+            <option value="0.3">70 / 30</option>
+            <option value="0.4">60 / 40</option>
+          </select>
+        </div>
+
+        <button class="run-btn" id="runBtn" disabled>
+          <span>Build Tree</span>
+          <div class="btn-arrow">→</div>
+        </button>
+      </div>
+    </section>
+
+    <!-- METRICS -->
+    <section class="panel metrics-panel hidden" id="metricsPanel">
+      <div class="panel-header">
+        <span class="panel-label">02 — Metrics</span>
+        <span class="panel-status nominal">NOMINAL</span>
+      </div>
+      <div class="panel-body">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value" id="metricAccuracy">—</div>
+            <div class="metric-label">Accuracy</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="metricPrecision">—</div>
+            <div class="metric-label">Precision</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="metricRecall">—</div>
+            <div class="metric-label">Recall</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="metricF1">—</div>
+            <div class="metric-label">F1 Score</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="metricTrain">—</div>
+            <div class="metric-label">Train rows</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value" id="metricTest">—</div>
+            <div class="metric-label">Test rows</div>
+          </div>
+        </div>
+        <div id="cmWrap" class="cm-wrap hidden">
+          <button class="cm-toggle" id="cmToggle" aria-expanded="false">
+            <span class="cm-title">CONFUSION MATRIX</span>
+            <span class="cm-chevron">▶</span>
+          </button>
+          <div class="cm-body hidden" id="cmBody">
+            <div id="cmTable"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TREE -->
+    <section class="panel tree-panel hidden" id="treePanel">
+      <div class="panel-header">
+        <span class="panel-label">03 — Tree</span>
+        <span class="panel-status nominal">READY</span>
+      </div>
+      <div class="panel-body">
+        <div class="tree-controls">
+          <button class="ctrl-btn" id="zoomIn">+</button>
+          <button class="ctrl-btn" id="zoomOut">−</button>
+          <button class="ctrl-btn" id="zoomReset">⟳</button>
+        </div>
+        <div id="treeContainer"></div>
+      </div>
+    </section>
+
+    <!-- PREDICT -->
+    <section class="panel predict-panel hidden" id="predictPanel">
+      <div class="panel-header">
+        <span class="panel-label">04 — Predict</span>
+        <span class="panel-status active">READY</span>
+      </div>
+      <div class="panel-body">
+        <div id="predictForm" class="predict-form"></div>
+        <button class="run-btn" id="predictBtn">
+          <span>Predict</span>
+          <div class="btn-arrow">→</div>
+        </button>
+        <div class="predict-result hidden" id="predictResult"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- METRIC TOOLTIP -->
+  <div class="metric-tooltip hidden" id="metricTooltip"></div>
+
+  <!-- LOADER -->
+  <div class="loader hidden" id="loader">
+    <span class="loader-text">BUILDING TREE <span class="cursor">▌</span></span>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script src="/static/tree.js"></script>
 </body>
 </html>

@@ -1,48 +1,63 @@
 from flask import Flask, request, jsonify, render_template
 import pandas as pd
-import json
-import io
-import sys
-sys.path.append("src")  # чтобы Flask видел твои модули
+import sys, os
 
-from build_tree import build_tree
-from predict import predict_dataset
-from metrics import train_test_split, accuracy
-from tree_to_json import tree_to_json
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
+
+from src.build_tree import build_tree
+from src.predict import predict, predict_dataset
+from src.metrics import train_test_split, get_metrics
+from src.tree_to_json import tree_to_json
 
 app = Flask(__name__)
+current_tree = None
 
-# Главная страница
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
-# Загрузка датасета и построение дерева
+
+@app.route("/theory")
+def theory():
+    return render_template("theory.html")
+
+
 @app.route("/train", methods=["POST"])
 def train():
-    file = request.files["file"]
-    target = request.form["target"]
+    global current_tree
 
-    # Читаем CSV
-    data = pd.read_csv(file)
+    data = pd.read_csv(request.files["file"])
+    target = request.form["target"]
     features = [col for col in data.columns if col != target]
 
-    # Строим дерево
-    train_data, test_data = train_test_split(data, test_size=0.2)
-    tree = build_tree(train_data, features, target)
+    test_size = float(request.form.get("test_size", 0.2))
+    train_data, test_data = train_test_split(data, test_size=test_size)
+    current_tree = build_tree(train_data, features, target)
 
-    # Считаем точность
-    y_real = test_data[target].tolist()
-    y_predicted = predict_dataset(tree, test_data)
-    acc = accuracy(y_real, y_predicted)
+    m = get_metrics(test_data[target].tolist(), predict_dataset(current_tree, test_data))
 
-    # Возвращаем JSON с деревом и метриками
     return jsonify({
-        "tree": tree_to_json(tree),
-        "accuracy": round(acc * 100, 2),
-        "train_size": len(train_data),
-        "test_size": len(test_data)
+        "tree":             tree_to_json(current_tree),
+        "accuracy":         round(m['accuracy']  * 100, 2),
+        "precision":        round(m['precision'] * 100, 2),
+        "recall":           round(m['recall']    * 100, 2),
+        "f1":               round(m['f1']        * 100, 2),
+        "confusion_matrix": m['confusion_matrix'],
+        "classes":          m['classes'],
+        "train_size":       len(train_data),
+        "test_size":        len(test_data),
+        "feature_values":   {f: sorted(data[f].dropna().astype(str).unique().tolist()) for f in features},
     })
+
+
+@app.route("/predict", methods=["POST"])
+def predict_single():
+    if current_tree is None:
+        return jsonify({"error": "Tree not built yet"}), 400
+    sample = request.get_json()["sample"]
+    return jsonify({"prediction": predict(current_tree, sample)})
+
 
 if __name__ == "__main__":
     app.run(debug=True)

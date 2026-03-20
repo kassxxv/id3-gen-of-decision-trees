@@ -1,0 +1,782 @@
+/* ─── DESIGN TOKENS ──────────────────────────────── */
+:root {
+  --bg-base: #0d0d0d;
+  --bg-surface: #161616;
+  --bg-elevated: #202020;
+
+  --border-dim: #282828;
+  --border-mid: #383838;
+  --border-lit: #585858;
+
+  --text-primary: #ebebeb;
+  --text-secondary: #888888;
+  --text-dim: #484848;
+
+  --blue: #1a3fff;
+  --amber: #d97706;
+  --green: #22856a;
+  --red: #b91c1c;
+
+  --font-display: "Barlow Condensed", sans-serif;
+  --font-body: "Barlow", sans-serif;
+  --font-mono: "Martian Mono", monospace;
+}
+
+/* ─── RESET ──────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ─── HEADER ─────────────────────────────────────── */
+header {
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.logo span {
+  color: var(--blue);
+}
+
+.tagline {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ─── LAYOUT ─────────────────────────────────────── */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px; /* seam between panels */
+  background: var(--border-dim);
+  border-left: 1px solid var(--border-dim);
+  border-right: 1px solid var(--border-dim);
+}
+
+/* ─── PANELS ─────────────────────────────────────── */
+.panel {
+  background: var(--bg-surface);
+}
+
+/* ─── PANEL HEADER ───────────── */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 24px;
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.panel-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.panel-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.panel-status.nominal {
+  color: var(--green);
+}
+.panel-status.active {
+  color: var(--blue);
+}
+.panel-status.alarm {
+  color: var(--amber);
+}
+
+/* ─── PANEL BODY ─────────────────────────────────── */
+.panel-body {
+  padding: 24px;
+}
+
+/* ─── DROP ZONE ──────────────────────────────────── */
+.drop-zone {
+  border: 1px dashed var(--border-mid);
+  padding: 40px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 80ms linear,
+    background 80ms linear;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: var(--blue);
+  background: rgba(26, 63, 255, 0.03);
+}
+
+.drop-icon {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.drop-zone p {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.drop-zone span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.file-btn {
+  background: transparent;
+  border: 1px solid var(--border-mid);
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition:
+    border-color 0ms,
+    color 0ms;
+}
+
+.file-btn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.file-name {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--blue);
+  min-height: 16px;
+  letter-spacing: 0.05em;
+}
+
+/* ─── FORM CONTROLS ──────────────────────────────── */
+.target-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.target-row label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+select {
+  background: var(--bg-base);
+  border: 1px solid var(--border-mid);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+  flex: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0ms;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+select:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ─── BUTTONS ────────────────────────────────────── */
+.run-btn {
+  background: transparent;
+  border: 1px solid var(--blue);
+  color: var(--blue);
+  padding: 8px 20px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 80ms linear;
+}
+
+.run-btn:hover {
+  background: rgba(26, 63, 255, 0.08);
+}
+.run-btn:active {
+  background: rgba(26, 63, 255, 0.14);
+}
+.run-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: transparent;
+}
+
+.btn-arrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.ctrl-btn {
+  background: transparent;
+  border: 1px solid var(--border-mid);
+  color: var(--text-secondary);
+  width: 28px;
+  height: 28px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color 0ms,
+    color 0ms;
+}
+
+.ctrl-btn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+/* ─── INSTRUMENT TILES ───────────────────────────── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-dim);
+  border: 1px solid var(--border-dim);
+  margin-bottom: 12px;
+}
+
+.metric-card {
+  background: var(--bg-surface);
+  padding: 16px;
+  border-top: 3px solid var(--border-dim);
+}
+
+/* first 4 tiles: accuracy, precision, recall, f1 → blue */
+.metric-card:nth-child(-n + 4) {
+  border-top-color: var(--blue);
+}
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.metric-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ─── CONFUSION MATRIX ───────────────────────────── */
+.cm-wrap {
+  border-top: 1px solid var(--border-dim);
+  padding-top: 12px;
+}
+
+.cm-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 12px;
+}
+
+.cm-toggle:hover .cm-title {
+  color: var(--text-secondary);
+}
+
+.cm-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.cm-chevron {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+}
+
+.cm-body {
+  margin-top: 8px;
+}
+
+.cm-table {
+  border-collapse: collapse;
+}
+
+.cm-head {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 20px;
+  text-align: center;
+  font-weight: 400;
+}
+
+.cm-cell {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  padding: 12px 28px;
+  text-align: center;
+  border: 1px solid var(--border-dim);
+}
+
+.cm-correct {
+  color: var(--green);
+  background: rgba(34, 133, 106, 0.06);
+}
+.cm-wrong {
+  color: var(--red);
+  background: rgba(185, 28, 28, 0.06);
+}
+
+/* ─── TREE ───────────────────────────────────────── */
+.tree-controls {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+#treeContainer {
+  width: 100%;
+  height: 520px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-dim);
+  overflow: hidden;
+  cursor: grab;
+}
+
+#treeContainer:active {
+  cursor: grabbing;
+}
+
+.node circle {
+  fill: var(--bg-surface);
+  stroke: var(--border-lit);
+  stroke-width: 1.5px;
+}
+
+.node.leaf circle {
+  fill: var(--bg-base);
+}
+
+.node.leaf-0 circle {
+  stroke: var(--green);
+  fill: rgba(34, 133, 106, 0.08);
+}
+.node.leaf-1 circle {
+  stroke: var(--red);
+  fill: rgba(185, 28, 28, 0.08);
+}
+.node.leaf-2 circle {
+  stroke: var(--blue);
+  fill: rgba(26, 63, 255, 0.08);
+}
+
+.node text {
+  fill: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-anchor: middle;
+  letter-spacing: 0.02em;
+}
+
+.link {
+  fill: none;
+  stroke: var(--border-dim);
+  stroke-width: 1px;
+}
+
+.edge-label {
+  fill: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-anchor: middle;
+  letter-spacing: 0.04em;
+}
+
+/* ─── PREDICT FORM ───────────────────────────────── */
+.predict-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.predict-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.predict-field label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.predict-field select {
+  flex: none;
+}
+
+/* ─── PREDICT RESULT ─────────────────────────────── */
+.predict-result {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-dim);
+  background: var(--bg-base);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.predict-result.class-0 {
+  border-color: var(--green);
+  color: var(--green);
+}
+.predict-result.class-1 {
+  border-color: var(--red);
+  color: var(--red);
+}
+.predict-result.class-2 {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+/* ─── LOADER ─────────────────────────────────────── */
+.loader {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 13, 13, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.loader-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.cursor {
+  color: var(--blue);
+  animation: blink 500ms step-end infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ─── METRIC CARD — hover cursor ────────────────── */
+.metric-card {
+  cursor: default;
+}
+.metric-card:hover {
+  border-color: var(--border-mid);
+}
+
+/* ─── METRIC TOOLTIP ─────────────────────────────── */
+.metric-tooltip {
+  position: fixed;
+  z-index: 200;
+  width: 252px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-mid);
+  padding: 14px 16px;
+  pointer-events: none;
+}
+
+.mt-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+
+.mt-formula {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.mt-divider {
+  height: 1px;
+  background: var(--border-dim);
+  margin-bottom: 10px;
+}
+
+.mt-step {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  white-space: pre;
+}
+
+/* ─── TREE NODE STYLES ───────────────────────────── */
+
+/* internal node rect */
+.node.internal rect {
+  fill: var(--bg-surface);
+  stroke: var(--border-lit);
+  stroke-width: 1.5px;
+}
+
+.node.internal:hover rect {
+  stroke: var(--blue);
+}
+
+/* internal node text lines */
+.node-feature {
+  fill: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-anchor: middle;
+  letter-spacing: 0.03em;
+}
+
+.node-ig {
+  fill: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-anchor: middle;
+  letter-spacing: 0.04em;
+}
+
+/* leaf node text */
+.node.leaf text {
+  fill: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+.node.leaf-0 text {
+  fill: var(--green);
+}
+.node.leaf-1 text {
+  fill: var(--red);
+}
+.node.leaf-2 text {
+  fill: var(--blue);
+}
+
+/* node tooltip */
+.node-tooltip {
+  position: fixed;
+  z-index: 200;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-mid);
+  padding: 10px 14px;
+  pointer-events: none;
+  min-width: 140px;
+}
+
+.nt-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  line-height: 1.9;
+}
+
+.nt-key {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.nt-val {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-primary);
+}
+
+/* ─── CONFUSION MATRIX — density upgrades ────────── */
+.cm-corner,
+.cm-axis-label {
+  color: var(--text-dim);
+}
+
+.cm-axis-label {
+  text-align: center;
+  letter-spacing: 0.12em;
+}
+.cm-axis-label-v {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  letter-spacing: 0.12em;
+}
+.cm-row-label {
+  padding: 0 16px 0 0;
+  text-align: right;
+}
+
+.cm-val {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.cm-pct {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  margin-top: 3px;
+}
+
+.cm-total {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-dim);
+  padding: 10px 16px;
+  text-align: center;
+}
+
+.cm-grand {
+  color: var(--text-primary);
+}
+
+/* ─── NAV ────────────────────────────────────────── */
+.site-nav {
+  margin-left: auto;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--text-dim);
+  transition: color 80ms linear;
+}
+
+.nav-link.active {
+  color: var(--blue);
+}
+
+/* ─── SCROLLBAR ──────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-mid);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-lit);
+}

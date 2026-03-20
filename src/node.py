@@ -1,5 +1,5 @@
 class Node:
-    def __init(self):
+    def __init__(self):
         self.feature: str | None = None # name of the feature
         self.children: dict[str, Node] = {}
         self.label: str | None = None
