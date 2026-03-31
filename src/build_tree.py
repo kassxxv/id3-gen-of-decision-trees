@@ -3,11 +3,6 @@ from id3 import information_gain, entropy
 
 
 class ID3:
-    """
-    Clean implementation of the ID3 decision tree algorithm.
-    No step tracking — pure recursive tree building.
-    """
-
     def __init__(self):
         self.tree = None
 
