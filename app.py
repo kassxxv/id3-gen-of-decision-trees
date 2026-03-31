@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 import pandas as pd
 import sys, os
+from collections import defaultdict
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
@@ -33,9 +34,18 @@ def train():
 
     test_size = float(request.form.get("test_size", 0.2))
     train_data, test_data = train_test_split(data, test_size=test_size)
-    current_tree = build_tree(train_data, features, target)
+
+    steps = []
+    current_tree = build_tree(train_data, features, target, steps=steps)
 
     m = get_metrics(test_data[target].tolist(), predict_dataset(current_tree, test_data))
+
+    # Compute feature importances from build steps
+    importances = defaultdict(float)
+    for step in steps:
+        if not step["is_leaf"] and step.get("feature_chosen"):
+            importances[step["feature_chosen"]] += step["feature_candidates"][step["feature_chosen"]]
+    importances = dict(sorted(importances.items(), key=lambda x: x[1], reverse=True))
 
     return jsonify({
         "tree":             tree_to_json(current_tree),
@@ -48,6 +58,8 @@ def train():
         "train_size":       len(train_data),
         "test_size":        len(test_data),
         "feature_values":   {f: sorted(data[f].dropna().astype(str).unique().tolist()) for f in features},
+        "feature_importances": importances,
+        "build_steps":      steps,
     })
 
 

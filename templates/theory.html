@@ -4,137 +4,143 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ID3 — Theory</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&family=Martian+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/style.css" />
   <link rel="stylesheet" href="/static/theory.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+          onload="renderMathInElement(document.body,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}]});"></script>
 </head>
 <body>
 
-  <header>
-    <div class="logo">ID3<span>.</span></div>
-    <p class="tagline">Decision Tree Generator</p>
-    <nav class="site-nav">
-      <a href="/"       class="nav-link">← App</a>
-      <a href="/theory" class="nav-link active">Theory</a>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">ID3<span class="logo-dot">.</span></a>
+    <nav class="nav">
+      <a href="/">App</a>
+      <a href="/theory" class="active">Theory</a>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <main>
+<main>
 
-    <!-- WHAT IS ID3 -->
-    <section class="th-section">
-      <div class="panel-header">
-        <span class="panel-label">ID3 Algorithm</span>
-        <span class="panel-status">Quinlan, 1986</span>
+  <section class="hero" style="padding-bottom:40px">
+    <h1>How ID3 Works</h1>
+    <p>Entropy, information gain, and the greedy algorithm.</p>
+    <div class="hero-line"></div>
+  </section>
+
+  <!-- WHAT IS ID3 -->
+  <section class="card">
+    <div class="card-header">
+      <span class="pill pill-orange">ID3 Algorithm</span>
+    </div>
+    <div class="card-body th-body">
+      <p>
+        ID3 — <em>Iterative Dichotomiser 3</em> — builds a decision tree by repeatedly
+        splitting a dataset on the feature that reduces class uncertainty the most.
+        It works top-down, greedily, with no backtracking.
+      </p>
+      <p>
+        Each internal node in the resulting tree tests one feature.
+        Each branch is a possible value of that feature.
+        Each leaf is a class label — assigned by majority vote over whatever
+        training examples ended up there.
+      </p>
+      <p>
+        The algorithm only handles <strong>categorical features</strong>. Continuous
+        values need to be discretised before training. This is a real limitation —
+        C4.5 (Quinlan, 1993) extended ID3 to handle numeric splits and missing values.
+      </p>
+      <div class="th-note">
+        Despite the name, ID3 is recursive, not iterative. Quinlan chose the name because
+        he refined it over several versions of an earlier algorithm.
       </div>
-      <div class="th-body">
-        <p>
-          ID3 — <em>Iterative Dichotomiser 3</em> — builds a decision tree by repeatedly
-          splitting a dataset on the feature that reduces class uncertainty the most.
-          It works top-down, greedily, with no backtracking.
-        </p>
-        <p>
-          Each internal node in the resulting tree tests one feature.
-          Each branch is a possible value of that feature.
-          Each leaf is a class label — assigned by majority vote over whatever
-          training examples ended up there.
-        </p>
-        <p>
-          The algorithm only handles <strong>categorical features</strong>. Continuous
-          values need to be discretised before training. This is a real limitation —
-          C4.5 (Quinlan, 1993) extended ID3 to handle numeric splits and missing values.
-        </p>
+    </div>
+  </section>
 
-        <div class="note">
-          The name "Iterative Dichotomiser" is slightly misleading — the algorithm is not
-          iterative in the usual sense. It's recursive. The name refers to the fact that
-          Quinlan developed it through several iterations of an earlier algorithm.
+  <!-- ENTROPY -->
+  <section class="card">
+    <div class="card-header">
+      <span class="pill pill-teal">Entropy</span>
+    </div>
+    <div class="card-body th-body">
+      <p>
+        Entropy measures how mixed up a set of examples is.
+        If every example has the same label, entropy is 0 — no disorder, nothing to learn.
+        If labels are split perfectly evenly, entropy is at its maximum.
+      </p>
+
+      <div class="formula-block formula-block--math">
+        \[H(S) = -\sum_{i} p_i \cdot \log_2(p_i)\]
+        <div class="formula-sub">\(p_i\) = fraction of examples in \(S\) that belong to class \(i\)</div>
+      </div>
+
+      <p>
+        For a binary problem, maximum entropy is 1.0 (50/50 split).
+        For c classes, the ceiling is log&#x2082;(c).
+        Entropy is always &ge; 0 and equals 0 only when the set is pure.
+      </p>
+
+      <div class="formula-block formula-block--math">
+        <div class="formula-sub formula-sub--label">example — 9 positive, 5 negative:</div>
+        \[p_{+} = \tfrac{9}{14} \approx 0.643 \qquad p_{-} = \tfrac{5}{14} \approx 0.357\]
+        \[H(S) = -(0.643 \cdot \log_2 0.643) - (0.357 \cdot \log_2 0.357) \approx 0.940\]
+      </div>
+    </div>
+  </section>
+
+  <!-- INFORMATION GAIN -->
+  <section class="card">
+    <div class="card-header">
+      <span class="pill pill-green">Information Gain</span>
+    </div>
+    <div class="card-body th-body">
+      <p>
+        Information Gain answers: <em>how much does splitting on feature A reduce
+        the entropy of set S?</em> ID3 picks whichever feature maximises this at
+        each node.
+      </p>
+
+      <div class="formula-block formula-block--math">
+        \[\operatorname{IG}(S,\, A) = H(S) - \sum_{v} \frac{|S_v|}{|S|} \cdot H(S_v)\]
+        <div class="formula-sub">
+          \(S_v\) = subset of \(S\) where \(A = v\) &nbsp;&middot;&nbsp;
+          weight = proportion of examples that take value \(v\)
         </div>
       </div>
-    </section>
 
-    <!-- ENTROPY -->
-    <section class="th-section">
-      <div class="panel-header">
-        <span class="panel-label">Entropy</span>
-        <span class="panel-status">H(S)</span>
+      <p>
+        The weighted sum accounts for the fact that a split producing one large pure
+        child and one tiny impure child is still mostly good. Larger subsets count more.
+      </p>
+
+      <div class="formula-block formula-block--math">
+        <div class="formula-sub formula-sub--label">example — feature "Wind":</div>
+        \[S = \{9+,\; 5-\} \qquad H(S) = 0.940\]
+        \[\text{Wind=Weak} \;\to\; S_v = \{6+,\; 2-\},\quad H = 0.811,\quad \text{weight} = \tfrac{8}{14}\]
+        \[\text{Wind=Strong} \;\to\; S_v = \{3+,\; 3-\},\quad H = 1.000,\quad \text{weight} = \tfrac{6}{14}\]
+        \[\operatorname{IG}(S,\,\text{Wind}) = 0.940 - \tfrac{8}{14}\cdot 0.811 - \tfrac{6}{14}\cdot 1.000 \approx 0.048\]
       </div>
-      <div class="th-body">
-        <p>
-          Entropy measures how mixed up a set of examples is.
-          If every example has the same label, entropy is 0 — no disorder, nothing to learn.
-          If labels are split perfectly evenly, entropy is at its maximum.
-        </p>
 
-<div class="formula-block"><span class="acc">H(S)</span> = &minus;&sum; p&#x1D456; &middot; log&#x2082;(p&#x1D456;)
-
-<span class="dim">p&#x1D456; = fraction of examples in S that belong to class i</span></div>
-
-        <p>
-          For a binary problem, maximum entropy is 1.0 (50/50 split).
-          For c classes, the ceiling is log₂(c).
-          Entropy is always ≥ 0 and equals 0 only when the set is pure.
-        </p>
-
-<div class="formula-block"><span class="dim">example — 9 positive, 5 negative:</span>
-
-p&#x208A; = 9/14 &asymp; 0.643    p&#x208B; = 5/14 &asymp; 0.357
-
-<span class="acc">H(S)</span> = &minus;(0.643 &middot; log&#x2082; 0.643) &minus; (0.357 &middot; log&#x2082; 0.357)
-     &asymp; <span class="acc">0.940</span></div>
+      <div class="th-note">
+        Features with many unique values (like an ID column) get unfairly high IG — they
+        split the data into many tiny pure subsets. C4.5 fixes this with Gain Ratio, which
+        penalises features that produce too many branches.
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- INFORMATION GAIN -->
-    <section class="th-section">
-      <div class="panel-header">
-        <span class="panel-label">Information Gain</span>
-        <span class="panel-status">IG(S, A)</span>
-      </div>
-      <div class="th-body">
-        <p>
-          Information Gain answers: <em>how much does splitting on feature A reduce
-          the entropy of set S?</em> ID3 picks whichever feature maximises this at
-          each node.
-        </p>
+  <!-- ALGORITHM -->
+  <section class="card">
+    <div class="card-header">
+      <span class="pill pill-purple">The Algorithm</span>
+    </div>
+    <div class="card-body th-body">
 
-<div class="formula-block"><span class="acc">IG(S, A)</span> = H(S) &minus; &sum;<sub>v</sub> (|S&#x1D463;| / |S|) &middot; H(S&#x1D463;)
-
-<span class="dim">S&#x1D463; = subset of S where A = v
-weight = proportion of examples that take value v</span></div>
-
-        <p>
-          The weighted sum accounts for the fact that a split producing one large pure
-          child and one tiny impure child is still mostly good. Larger subsets count more.
-        </p>
-
-<div class="formula-block"><span class="dim">same example — feature "Wind":</span>
-
-S = {9+, 5&minus;}         H(S) = 0.940
-
-Wind=Weak   &rarr; S&#x1D463; = {6+, 2&minus;}   H = 0.811   weight = 8/14
-Wind=Strong &rarr; S&#x1D463; = {3+, 3&minus;}   H = 1.000   weight = 6/14
-
-<span class="acc">IG(S, Wind)</span> = 0.940 &minus; (8/14)&middot;0.811 &minus; (6/14)&middot;1.000 &asymp; <span class="acc">0.048</span></div>
-
-        <div class="note">
-          High-arity features (like a customer ID column) get artificially inflated IG because
-          they split the data into many tiny pure subsets. C4.5 corrects this with Gain Ratio,
-          which divides IG by the entropy of the feature's own value distribution.
-        </div>
-      </div>
-    </section>
-
-    <!-- ALGORITHM -->
-    <section class="th-section">
-      <div class="panel-header">
-        <span class="panel-label">The Algorithm</span>
-        <span class="panel-status">Recursive</span>
-      </div>
-      <div class="th-body">
-
-<div class="pseudo"><span class="kw">function</span> <span class="fn">ID3</span>(S, features, target):
+      <div class="pseudo"><span class="kw">function</span> <span class="fn">ID3</span>(S, features, target):
 
   <span class="kw">if</span> all labels in S are identical:
       <span class="kw">return</span> Leaf(that label)
@@ -142,7 +148,7 @@ Wind=Strong &rarr; S&#x1D463; = {3+, 3&minus;}   H = 1.000   weight = 6/14
   <span class="kw">if</span> features is empty:
       <span class="kw">return</span> Leaf(majority label in S)
 
-  A = argmax<sub>f</sub> IG(S, f)          <span class="cm">← greedy choice</span>
+  A = argmax<sub>f</sub> IG(S, f)          <span class="cm">&#8592; greedy choice</span>
   node = Node(feature = A)
 
   <span class="kw">for</span> each value v <span class="kw">in</span> A:
@@ -155,77 +161,75 @@ Wind=Strong &rarr; S&#x1D463; = {3+, 3&minus;}   H = 1.000   weight = 6/14
 
   <span class="kw">return</span> node</div>
 
-        <ol class="step-list">
-          <li>
-            <span class="step-num">01</span>
-            <div class="step-text">
-              <strong>Pure node</strong>
-              All examples agree — return a leaf immediately. No further splitting is possible or useful.
-            </div>
-          </li>
-          <li>
-            <span class="step-num">02</span>
-            <div class="step-text">
-              <strong>No features left</strong>
-              Examples still disagree but there's nothing left to split on.
-              Return a leaf with the majority class. This is the fallback for contradictory data.
-            </div>
-          </li>
-          <li>
-            <span class="step-num">03</span>
-            <div class="step-text">
-              <strong>Greedy split</strong>
-              Pick the feature with the highest IG. No backtracking — this decision is permanent.
-              The tree is built in one pass.
-            </div>
-          </li>
-          <li>
-            <span class="step-num">04</span>
-            <div class="step-text">
-              <strong>Empty branch</strong>
-              A feature value that never appears in S produces an empty subset.
-              Use the parent's majority class as a default leaf.
-            </div>
-          </li>
-        </ol>
-      </div>
-    </section>
+      <ol class="step-list">
+        <li>
+          <span class="step-num">01</span>
+          <div class="step-text">
+            <strong>Pure node</strong>
+            All examples agree — return a leaf immediately.
+          </div>
+        </li>
+        <li>
+          <span class="step-num">02</span>
+          <div class="step-text">
+            <strong>No features left</strong>
+            Examples still disagree but there's nothing left to split on.
+            Return a leaf with the majority class.
+          </div>
+        </li>
+        <li>
+          <span class="step-num">03</span>
+          <div class="step-text">
+            <strong>Greedy split</strong>
+            Pick the feature with the highest IG. No backtracking — this decision is permanent.
+          </div>
+        </li>
+        <li>
+          <span class="step-num">04</span>
+          <div class="step-text">
+            <strong>Empty branch</strong>
+            A feature value that never appears in S produces an empty subset.
+            Use the parent's majority class as a default leaf.
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
 
-    <!-- WORKED EXAMPLE -->
-    <section class="th-section">
-      <div class="panel-header">
-        <span class="panel-label">Worked Example</span>
-        <span class="panel-status nominal">Play Tennis</span>
-      </div>
-      <div class="th-body">
-        <p>
-          The canonical ID3 dataset. 14 examples, 4 categorical features, binary target.
-          Simple enough to compute by hand.
-        </p>
+  <!-- WORKED EXAMPLE -->
+  <section class="card">
+    <div class="card-header">
+      <span class="pill pill-orange">Worked Example</span>
+    </div>
+    <div class="card-body th-body">
+      <p>
+        The canonical ID3 dataset. 14 examples, 4 categorical features, binary target.
+        Simple enough to compute by hand.
+      </p>
 
-        <table class="data-table">
-          <thead>
-            <tr><th>Day</th><th>Outlook</th><th>Temp</th><th>Humidity</th><th>Wind</th><th>Play</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>1</td><td>Sunny</td><td>Hot</td><td>High</td><td>Weak</td><td class="no">No</td></tr>
-            <tr><td>2</td><td>Sunny</td><td>Hot</td><td>High</td><td>Strong</td><td class="no">No</td></tr>
-            <tr><td>3</td><td>Overcast</td><td>Hot</td><td>High</td><td>Weak</td><td class="yes">Yes</td></tr>
-            <tr><td>4</td><td>Rain</td><td>Mild</td><td>High</td><td>Weak</td><td class="yes">Yes</td></tr>
-            <tr><td>5</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Weak</td><td class="yes">Yes</td></tr>
-            <tr><td>6</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Strong</td><td class="no">No</td></tr>
-            <tr><td>7</td><td>Overcast</td><td>Cool</td><td>Normal</td><td>Strong</td><td class="yes">Yes</td></tr>
-            <tr><td>8</td><td>Sunny</td><td>Mild</td><td>High</td><td>Weak</td><td class="no">No</td></tr>
-            <tr><td>9</td><td>Sunny</td><td>Cool</td><td>Normal</td><td>Weak</td><td class="yes">Yes</td></tr>
-            <tr><td>10</td><td>Rain</td><td>Mild</td><td>Normal</td><td>Weak</td><td class="yes">Yes</td></tr>
-            <tr><td>11</td><td>Sunny</td><td>Mild</td><td>Normal</td><td>Strong</td><td class="yes">Yes</td></tr>
-            <tr><td>12</td><td>Overcast</td><td>Mild</td><td>High</td><td>Strong</td><td class="yes">Yes</td></tr>
-            <tr><td>13</td><td>Overcast</td><td>Hot</td><td>Normal</td><td>Weak</td><td class="yes">Yes</td></tr>
-            <tr><td>14</td><td>Rain</td><td>Mild</td><td>High</td><td>Strong</td><td class="no">No</td></tr>
-          </tbody>
-        </table>
+      <table class="th-data-table">
+        <thead>
+          <tr><th>Day</th><th>Outlook</th><th>Temp</th><th>Humidity</th><th>Wind</th><th>Play</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Sunny</td><td>Hot</td><td>High</td><td>Weak</td><td class="td-no">No</td></tr>
+          <tr><td>2</td><td>Sunny</td><td>Hot</td><td>High</td><td>Strong</td><td class="td-no">No</td></tr>
+          <tr><td>3</td><td>Overcast</td><td>Hot</td><td>High</td><td>Weak</td><td class="td-yes">Yes</td></tr>
+          <tr><td>4</td><td>Rain</td><td>Mild</td><td>High</td><td>Weak</td><td class="td-yes">Yes</td></tr>
+          <tr><td>5</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Weak</td><td class="td-yes">Yes</td></tr>
+          <tr><td>6</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Strong</td><td class="td-no">No</td></tr>
+          <tr><td>7</td><td>Overcast</td><td>Cool</td><td>Normal</td><td>Strong</td><td class="td-yes">Yes</td></tr>
+          <tr><td>8</td><td>Sunny</td><td>Mild</td><td>High</td><td>Weak</td><td class="td-no">No</td></tr>
+          <tr><td>9</td><td>Sunny</td><td>Cool</td><td>Normal</td><td>Weak</td><td class="td-yes">Yes</td></tr>
+          <tr><td>10</td><td>Rain</td><td>Mild</td><td>Normal</td><td>Weak</td><td class="td-yes">Yes</td></tr>
+          <tr><td>11</td><td>Sunny</td><td>Mild</td><td>Normal</td><td>Strong</td><td class="td-yes">Yes</td></tr>
+          <tr><td>12</td><td>Overcast</td><td>Mild</td><td>High</td><td>Strong</td><td class="td-yes">Yes</td></tr>
+          <tr><td>13</td><td>Overcast</td><td>Hot</td><td>Normal</td><td>Weak</td><td class="td-yes">Yes</td></tr>
+          <tr><td>14</td><td>Rain</td><td>Mild</td><td>High</td><td>Strong</td><td class="td-no">No</td></tr>
+        </tbody>
+      </table>
 
-<div class="formula-block"><span class="dim">root — which feature to split on first?</span>
+      <div class="formula-block"><span class="dim">root — which feature to split on first?</span>
 
 S = {9 Yes, 5 No}     H(S) = 0.940
 
@@ -234,73 +238,73 @@ IG(Humidity)    = 0.151
 IG(Wind)        = 0.048
 IG(Temperature) = 0.029</div>
 
-        <p>
-          Outlook wins. The tree splits into three branches:
-          <span class="tag">Overcast</span> is immediately pure (4 Yes, 0 No) — leaf.
-          <span class="tag">Sunny</span> recurses and splits on Humidity.
-          <span class="tag">Rain</span> recurses and splits on Wind.
-        </p>
+      <p>
+        Outlook wins. The tree splits into three branches:
+        <span class="tag">Overcast</span> is immediately pure (4 Yes, 0 No) — leaf.
+        <span class="tag">Sunny</span> recurses and splits on Humidity.
+        <span class="tag">Rain</span> recurses and splits on Wind.
+      </p>
 
-<div class="formula-block"><span class="dim">final rules extracted from the tree:</span>
+      <div class="formula-block"><span class="dim">final rules extracted from the tree:</span>
 
 Outlook = Overcast                      &rarr; <span class="good">Yes</span>
 Outlook = Sunny  &and; Humidity = Normal  &rarr; <span class="good">Yes</span>
 Outlook = Sunny  &and; Humidity = High    &rarr; <span class="bad">No</span>
 Outlook = Rain   &and; Wind = Weak        &rarr; <span class="good">Yes</span>
 Outlook = Rain   &and; Wind = Strong      &rarr; <span class="bad">No</span></div>
+    </div>
+  </section>
+
+  <!-- KNOWN LIMITATIONS -->
+  <section class="card">
+    <div class="card-header">
+      <span class="pill pill-red">Known Limitations</span>
+    </div>
+    <div class="card-body th-body">
+      <p>
+        ID3 was the starting point, not the final word. Quinlan himself addressed
+        most of these in C4.5 seven years later.
+      </p>
+
+      <table class="th-cmp-table">
+        <thead>
+          <tr><th>Problem</th><th>What happens</th><th>C4.5 fix</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Categorical only</td>
+            <td>Numeric features are not supported. All values must be discrete categories.</td>
+            <td>Finds the best threshold to split a numeric feature into two ranges</td>
+          </tr>
+          <tr>
+            <td>Bias toward many values</td>
+            <td>A feature with many unique values (e.g. an ID) almost always wins IG, even if it's meaningless.</td>
+            <td>Gain Ratio penalises features that produce too many branches</td>
+          </tr>
+          <tr>
+            <td>No missing values</td>
+            <td>A missing value causes an empty branch. ID3 has no fallback for it.</td>
+            <td>Missing examples are spread across branches in proportion to how many examples take each value</td>
+          </tr>
+          <tr>
+            <td>Overfitting</td>
+            <td>The tree grows until every leaf is pure or features run out — it memorises noise on messy data.</td>
+            <td>Prunes branches after training where removing them reduces test error</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="th-note">
+        Overfitting is the most practically painful issue. A tree that scores 100%
+        on training data and 60% on test data is not a good model — it has memorised
+        the training set rather than learned a general pattern.
+        This implementation does not prune.
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- KNOWN LIMITATIONS -->
-    <section class="th-section">
-      <div class="panel-header">
-        <span class="panel-label">Known Limitations</span>
-        <span class="panel-status alarm">ID3 only</span>
-      </div>
-      <div class="th-body">
-        <p>
-          ID3 was the starting point, not the final word. Quinlan himself addressed
-          most of these in C4.5 seven years later.
-        </p>
 
-        <table class="cmp-table">
-          <thead>
-            <tr><th>Problem</th><th>What happens</th><th>C4.5 fix</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Categorical only</td>
-              <td>No numeric features. Everything must be discretised beforehand.</td>
-              <td>Threshold splits — finds the cut point that maximises gain</td>
-            </tr>
-            <tr>
-              <td>High-arity bias</td>
-              <td>A feature with 100 unique values will almost always win IG, even if it's useless (e.g. a row ID).</td>
-              <td>Gain Ratio divides IG by the feature's own split entropy</td>
-            </tr>
-            <tr>
-              <td>No missing values</td>
-              <td>A missing value produces an empty branch. ID3 has no strategy for it.</td>
-              <td>Fractional examples — split each missing example across branches by proportion</td>
-            </tr>
-            <tr>
-              <td>Overfitting</td>
-              <td>The tree grows until every leaf is pure or features run out. On noisy data it memorises noise.</td>
-              <td>Post-pruning — collapse subtrees where pruning reduces estimated error</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="note">
-          Overfitting is the most practically painful issue. A tree that scores 100%
-          on training data and 60% on test data is not a good model — it has memorised
-          the training set rather than learned a general pattern.
-          This implementation does not prune.
-        </div>
-      </div>
-    </section>
-
-  </main>
+</main>
 
 </body>
 </html>

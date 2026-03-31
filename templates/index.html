@@ -3,155 +3,161 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ID3 Decision Tree</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&family=Martian+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>ID3 Decision Tree Generator</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
 
-  <header>
-    <div class="logo">ID3<span>.</span></div>
-    <p class="tagline">Decision Tree Generator</p>
-    <nav class="site-nav">
-      <a href="/"       class="nav-link active">App</a>
-      <a href="/theory" class="nav-link">Theory</a>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="logo">ID3<span class="logo-dot">.</span></a>
+    <nav class="nav">
+      <a href="/" class="active">App</a>
+      <a href="/theory">Theory</a>
     </nav>
-  </header>
-
-  <main>
-
-    <!-- UPLOAD -->
-    <section class="panel upload-panel" id="uploadPanel">
-      <div class="panel-header">
-        <span class="panel-label">01 — Upload</span>
-        <span class="panel-status" id="uploadStatus">WAITING</span>
-      </div>
-      <div class="panel-body">
-        <div class="drop-zone" id="dropZone">
-          <div class="drop-icon">↑</div>
-          <p>Drag & drop CSV file here</p>
-          <span>or</span>
-          <label class="file-btn">
-            Browse file
-            <input type="file" id="fileInput" accept=".csv" hidden />
-          </label>
-          <div class="file-name" id="fileName">No file selected</div>
-        </div>
-
-        <div class="target-row">
-          <label>Target column</label>
-          <select id="targetSelect" disabled>
-            <option value="">— upload file first —</option>
-          </select>
-        </div>
-
-        <div class="target-row">
-          <label>Test split</label>
-          <select id="splitSelect">
-            <option value="0.1">90 / 10</option>
-            <option value="0.2" selected>80 / 20</option>
-            <option value="0.25">75 / 25</option>
-            <option value="0.3">70 / 30</option>
-            <option value="0.4">60 / 40</option>
-          </select>
-        </div>
-
-        <button class="run-btn" id="runBtn" disabled>
-          <span>Build Tree</span>
-          <div class="btn-arrow">→</div>
-        </button>
-      </div>
-    </section>
-
-    <!-- METRICS -->
-    <section class="panel metrics-panel hidden" id="metricsPanel">
-      <div class="panel-header">
-        <span class="panel-label">02 — Metrics</span>
-        <span class="panel-status nominal">NOMINAL</span>
-      </div>
-      <div class="panel-body">
-        <div class="metrics-grid">
-          <div class="metric-card">
-            <div class="metric-value" id="metricAccuracy">—</div>
-            <div class="metric-label">Accuracy</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value" id="metricPrecision">—</div>
-            <div class="metric-label">Precision</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value" id="metricRecall">—</div>
-            <div class="metric-label">Recall</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value" id="metricF1">—</div>
-            <div class="metric-label">F1 Score</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value" id="metricTrain">—</div>
-            <div class="metric-label">Train rows</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-value" id="metricTest">—</div>
-            <div class="metric-label">Test rows</div>
-          </div>
-        </div>
-        <div id="cmWrap" class="cm-wrap hidden">
-          <button class="cm-toggle" id="cmToggle" aria-expanded="false">
-            <span class="cm-title">CONFUSION MATRIX</span>
-            <span class="cm-chevron">▶</span>
-          </button>
-          <div class="cm-body hidden" id="cmBody">
-            <div id="cmTable"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TREE -->
-    <section class="panel tree-panel hidden" id="treePanel">
-      <div class="panel-header">
-        <span class="panel-label">03 — Tree</span>
-        <span class="panel-status nominal">READY</span>
-      </div>
-      <div class="panel-body">
-        <div class="tree-controls">
-          <button class="ctrl-btn" id="zoomIn">+</button>
-          <button class="ctrl-btn" id="zoomOut">−</button>
-          <button class="ctrl-btn" id="zoomReset">⟳</button>
-        </div>
-        <div id="treeContainer"></div>
-      </div>
-    </section>
-
-    <!-- PREDICT -->
-    <section class="panel predict-panel hidden" id="predictPanel">
-      <div class="panel-header">
-        <span class="panel-label">04 — Predict</span>
-        <span class="panel-status active">READY</span>
-      </div>
-      <div class="panel-body">
-        <div id="predictForm" class="predict-form"></div>
-        <button class="run-btn" id="predictBtn">
-          <span>Predict</span>
-          <div class="btn-arrow">→</div>
-        </button>
-        <div class="predict-result hidden" id="predictResult"></div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- METRIC TOOLTIP -->
-  <div class="metric-tooltip hidden" id="metricTooltip"></div>
-
-  <!-- LOADER -->
-  <div class="loader hidden" id="loader">
-    <span class="loader-text">BUILDING TREE <span class="cursor">▌</span></span>
   </div>
+</header>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-  <script src="/static/tree.js"></script>
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+<h1>Decision Tree </h1>
+    <p>Upload a dataset. Build an ID3 tree.</p>
+    <div class="hero-line"></div>
+  </section>
+
+  <!-- 01 UPLOAD -->
+  <section class="card" id="uploadSection">
+    <div class="card-header">
+      <span class="pill pill-orange">01&nbsp;&nbsp;Upload</span>
+    </div>
+    <div class="card-body">
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-zone-icon">&#8593;</div>
+        <p>Drag &amp; drop your CSV file here</p>
+        <div class="or">or</div>
+        <button class="btn-browse" id="browseBtn">Browse Files</button>
+        <input type="file" id="fileInput" accept=".csv" style="display:none" />
+        <div class="file-status hidden" id="fileStatus"></div>
+      </div>
+
+      <div class="controls-row" style="margin-top:20px">
+        <div class="control-group">
+          <label class="control-label">Target Column</label>
+          <select class="control-select" id="targetSelect" disabled>
+            <option>—</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Test Split</label>
+          <select class="control-select" id="splitSelect">
+            <option value="0.1">10%</option>
+            <option value="0.2" selected>20%</option>
+            <option value="0.3">30%</option>
+            <option value="0.4">40%</option>
+          </select>
+        </div>
+        <div class="controls-spacer"></div>
+        <button class="btn-primary" id="buildBtn" disabled>Build Tree <span>&#8594;</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 DATASET PREVIEW -->
+  <section class="card section-hidden" id="datasetSection">
+    <div class="card-header">
+      <span class="pill pill-teal">02&nbsp;&nbsp;Dataset Preview</span>
+      <span id="datasetInfo" style="font-size:12px;color:var(--text-dim)"></span>
+    </div>
+    <div class="dataset-table-wrap" id="datasetTableWrap">
+    </div>
+  </section>
+
+  <!-- 03 BUILDING PROCESS -->
+  <section class="card section-hidden" id="animationSection">
+    <div class="card-header">
+      <span class="pill pill-purple">03&nbsp;&nbsp;Building Process</span>
+    </div>
+    <div class="card-body">
+      <div class="anim-controls">
+        <button class="btn-secondary" id="animPlay">&#9654; Play</button>
+        <button class="btn-secondary" id="animPause">&#9208; Pause</button>
+        <button class="btn-secondary" id="animStep">&#9197; Step</button>
+        <button class="btn-accent" id="animSkip">Skip to Result &#8594;</button>
+        <span class="step-counter">Step <span id="stepCurrent">0</span> / <span id="stepTotal">0</span></span>
+      </div>
+      <div class="step-info hidden" id="stepInfo">
+        <div class="step-info-header" id="stepInfoHeader"></div>
+        <div id="stepInfoBars"></div>
+        <div class="step-class-dist" id="stepClassDist"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 METRICS -->
+  <section class="card section-hidden" id="metricsSection">
+    <div class="card-header">
+      <span class="pill pill-green">04&nbsp;&nbsp;Metrics</span>
+    </div>
+    <div class="card-body">
+      <div class="metrics-grid" id="metricsGrid"></div>
+      <div class="metrics-grid-secondary" id="metricsGridSecondary"></div>
+      <div class="fi-section" id="fiSection">
+        <div class="fi-title">Feature Importances</div>
+        <div id="fiBars"></div>
+      </div>
+      <div>
+        <div class="cm-title">Confusion Matrix</div>
+        <table class="cm-table" id="cmTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 DECISION TREE -->
+  <section class="card section-hidden" id="treeSection" style="padding-bottom:0">
+    <div class="card-header">
+      <span class="pill pill-teal">05&nbsp;&nbsp;Decision Tree</span>
+      <div class="tree-controls">
+        <button id="zoomIn">+</button>
+        <button id="zoomReset">Reset</button>
+        <button id="zoomOut">&minus;</button>
+      </div>
+    </div>
+    <div class="tree-canvas" id="treeCanvas">
+      <div class="node-detail hidden" id="nodeDetail">
+        <button class="node-detail-close" id="nodeDetailClose">&times;</button>
+        <div id="nodeDetailContent"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 PREDICT -->
+  <section class="card section-hidden" id="predictSection">
+    <div class="card-header">
+      <span class="pill pill-orange">06&nbsp;&nbsp;Predict</span>
+    </div>
+    <div class="card-body">
+      <div class="predict-form" id="predictForm"></div>
+      <div class="predict-actions">
+        <button class="btn-primary" id="predictBtn">Predict <span>&#8594;</span></button>
+        <div class="predict-result hidden" id="predictResult">
+          <span class="label">Prediction:</span>
+          <span class="value" id="predictValue"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- LOADER -->
+<div class="loader-overlay hidden" id="loader">
+  <div class="loader-spinner"></div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="/static/tree.js"></script>
+
 </body>
 </html>

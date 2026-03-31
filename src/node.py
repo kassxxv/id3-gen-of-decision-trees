@@ -3,6 +3,10 @@ class Node:
         self.feature: str | None = None # name of the feature
         self.children: dict[str, Node] = {}
         self.label: str | None = None
+        self.entropy: float | None = None
+        self.information_gain: float | None = None
+        self.samples: int = 0
+        self.class_distribution: dict[str, int] = {}
 
     def is_leaf(self) -> bool:
         return self.label is not None

@@ -1,192 +1,220 @@
-.th-section {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-dim);
-}
-
-.th-body {
-  padding: 24px 28px;
-  max-width: 820px;
-}
+/* ── Theory Page Styles ── */
 
 .th-body p {
-  font-family: var(--font-body);
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.8;
-  margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 16px;
 }
 
 .th-body p strong {
-  color: var(--text-primary);
-  font-weight: 500;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.th-body p em {
+    color: var(--text-primary);
+    font-style: italic;
 }
 
 /* ── formula ── */
 .formula-block {
-  background: var(--bg-base);
-  border: 1px solid var(--border-dim);
-  border-left: 3px solid var(--blue);
-  padding: 14px 18px;
-  margin: 18px 0;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--text-primary);
-  line-height: 2.1;
-  white-space: pre;
-  overflow-x: auto;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 2.1;
+    white-space: pre;
+    overflow-x: auto;
 }
 
-.formula-block .dim  { color: var(--text-dim); }
-.formula-block .acc  { color: var(--blue); }
+.formula-block .dim { color: var(--text-dim); }
+.formula-block .acc { color: var(--orange); }
 .formula-block .good { color: var(--green); }
-.formula-block .bad  { color: var(--red); }
+.formula-block .bad { color: var(--red); }
+
+/* Math blocks (KaTeX) */
+.formula-block--math {
+    font-family: inherit;
+    white-space: normal;
+    line-height: 1.4;
+}
+
+.formula-block--math .katex-display {
+    margin: 10px 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.formula-sub {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    line-height: 1.6;
+}
+
+.formula-sub--label {
+    margin-bottom: 10px;
+    font-style: italic;
+}
 
 /* ── pseudocode ── */
 .pseudo {
-  background: var(--bg-base);
-  border: 1px solid var(--border-dim);
-  padding: 14px 18px;
-  margin: 18px 0;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-secondary);
-  line-height: 2;
-  white-space: pre;
-  overflow-x: auto;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 18px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 2;
+    white-space: pre;
+    overflow-x: auto;
 }
 
-.pseudo .kw { color: var(--blue); }
+.pseudo .kw { color: var(--orange); }
 .pseudo .cm { color: var(--text-dim); }
-.pseudo .fn { color: var(--text-primary); }
+.pseudo .fn { color: var(--teal); }
 
 /* ── step list ── */
 .step-list {
-  list-style: none;
-  border: 1px solid var(--border-dim);
-  margin: 18px 0;
+    list-style: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin: 18px 0;
+    overflow: hidden;
 }
 
 .step-list li {
-  display: flex;
-  border-bottom: 1px solid var(--border-dim);
+    display: flex;
+    border-bottom: 1px solid var(--border);
 }
 
 .step-list li:last-child { border-bottom: none; }
 
 .step-num {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--text-dim);
-  background: var(--bg-base);
-  border-right: 1px solid var(--border-dim);
-  padding: 12px 12px;
-  min-width: 36px;
-  text-align: center;
-  flex-shrink: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: var(--orange);
+    background: var(--bg-base);
+    border-right: 1px solid var(--border);
+    padding: 12px 14px;
+    min-width: 40px;
+    text-align: center;
+    flex-shrink: 0;
+    font-weight: 600;
 }
 
 .step-text {
-  padding: 10px 16px;
-  font-family: var(--font-body);
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.7;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.7;
 }
 
 .step-text strong {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-primary);
-  display: block;
-  margin-bottom: 2px;
-  letter-spacing: 0.04em;
+    font-size: 12px;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 2px;
+    font-weight: 600;
 }
 
 /* ── comparison table ── */
-.cmp-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-  margin: 18px 0;
+.th-cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 18px 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
 }
 
-.cmp-table th {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  padding: 8px 14px;
-  border: 1px solid var(--border-dim);
-  background: var(--bg-base);
-  font-weight: 400;
-  text-align: left;
+.th-cmp-table th {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    font-weight: 600;
+    text-align: left;
 }
 
-.cmp-table td {
-  font-family: var(--font-body);
-  padding: 9px 14px;
-  border: 1px solid var(--border-dim);
-  color: var(--text-secondary);
-  line-height: 1.6;
-  vertical-align: top;
+.th-cmp-table td {
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    line-height: 1.6;
+    vertical-align: top;
 }
 
-.cmp-table tr td:first-child {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-primary);
-  background: var(--bg-base);
-  white-space: nowrap;
+.th-cmp-table tr td:first-child {
+    color: var(--text-primary);
+    font-weight: 500;
+    background: var(--bg-base);
+    white-space: nowrap;
 }
 
 /* ── dataset table ── */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  margin: 18px 0;
+.th-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin: 18px 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
 }
 
-.data-table th {
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  padding: 7px 12px;
-  border: 1px solid var(--border-dim);
-  background: var(--bg-base);
-  font-weight: 400;
+.th-data-table th {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    font-weight: 600;
 }
 
-.data-table td {
-  padding: 7px 12px;
-  border: 1px solid var(--border-dim);
-  color: var(--text-secondary);
+.th-data-table td {
+    padding: 7px 12px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
 }
 
-.data-table .no  { color: var(--red); }
-.data-table .yes { color: var(--green); }
+.th-data-table .td-no { color: var(--red); font-weight: 500; }
+.th-data-table .td-yes { color: var(--green); font-weight: 500; }
 
 /* ── tag ── */
 .tag {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--blue);
-  border: 1px solid rgba(26,63,255,0.25);
-  padding: 1px 6px;
-  display: inline;
+    font-size: 11px;
+    color: var(--teal);
+    background: var(--teal-dim);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
 }
 
 /* ── note ── */
-.note {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-dim);
-  letter-spacing: 0.05em;
-  border-left: 2px solid var(--border-mid);
-  padding-left: 12px;
-  margin: 14px 0;
-  line-height: 1.8;
+.th-note {
+    font-size: 12px;
+    color: var(--text-dim);
+    border-left: 2px solid var(--purple);
+    padding-left: 14px;
+    margin: 18px 0;
+    line-height: 1.8;
+    background: var(--purple-dim);
+    padding: 12px 14px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
