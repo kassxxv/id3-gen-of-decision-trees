@@ -1,9 +1,5 @@
-/* ========================================
-   ID3 Decision Tree Generator
-   Dark Theme + Orange/Teal Accents
-   ======================================== */
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 
 :root {
     --bg-base: #0A0A0A;
@@ -175,6 +171,11 @@ main {
 .pill-purple { background: var(--purple-dim); color: var(--purple); }
 
 /* ===== SECTION REVEAL ===== */
+/*
+ * Sections start invisible (opacity 0, shifted down) and slide into view
+ * when JS adds the 'visible' class. Using opacity+transform instead of
+ * display:none allows the CSS transition to animate smoothly.
+ */
 .section-hidden {
     opacity: 0;
     transform: translateY(24px);
@@ -188,6 +189,8 @@ main {
     pointer-events: auto;
 }
 
+/* !important overrides .section-hidden.visible on elements that are
+   explicitly hidden by JS (e.g. loader overlay, node detail panel) */
 .hidden { display: none !important; }
 
 /* ===== DROP ZONE ===== */

@@ -1,7 +1,8 @@
 from node import Node
 
+
 def tree_to_json(node: Node) -> dict:
-    # ak list - vratime len label
+    """Recursively convert a Node tree into a nested dict safe for JSON serialisation."""
     if node.is_leaf():
         return {
             "label": node.label,
@@ -10,7 +11,6 @@ def tree_to_json(node: Node) -> dict:
             "class_distribution": node.class_distribution
         }
 
-    # ak uzol — return feature a rekurzivne children
     return {
         "feature": node.feature,
         "entropy": node.entropy,

@@ -1,7 +1,3 @@
-// ═══════════════════════════════════════════════════
-// ID3 Decision Tree Generator — Frontend
-// ═══════════════════════════════════════════════════
-
 // ─── STATE ────────────────────────────────────────
 const AppState = {
   file: null,
@@ -37,17 +33,25 @@ function hide(el) { if (typeof el === 'string') el = $(el); el.classList.add('hi
 function revealSection(id) {
   const el = $(id);
   el.classList.remove('hidden');
-  // trigger reflow
+  // Reading offsetHeight forces a browser reflow so the element is rendered
+  // before 'visible' is added. Without this, both class changes happen in the
+  // same paint frame and the CSS transition never fires.
   void el.offsetHeight;
   el.classList.add('visible');
 }
 
+/**
+ * Minimal CSV parser: splits on commas and strips surrounding quotes.
+ * Does not handle commas inside quoted fields — adequate for typical
+ * tabular datasets but not general-purpose RFC 4180 compliance.
+ */
 function parseCSV(text) {
   const lines = text.trim().split('\n');
   const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
     const vals = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+    // Skip malformed rows whose column count doesn't match the header
     if (vals.length === headers.length) rows.push(vals);
   }
   return { headers, rows };
@@ -185,7 +189,8 @@ const TreeBuilder = {
 
       hide('#loader');
 
-      // Show sections with staggered reveal
+      // Sections are revealed with staggered delays so each CSS slide-in
+      // animation completes before the next section appears below it
       Animation.init(data.build_steps);
       revealSection('#animationSection');
 
@@ -561,6 +566,8 @@ const TreeViz = {
     const path = [];
     let curr = d;
     while (curr) { path.push(curr); curr = curr.parent; }
+    // Store D3 node objects (not IDs) in the Set so membership tests use
+    // object identity — each d3.hierarchy node is a unique instance
     const ids = new Set(path.map(n => n));
 
     this.g.selectAll('.tree-node').classed('highlighted', n => ids.has(n));

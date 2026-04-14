@@ -3,6 +3,7 @@ import pandas as pd
 import sys, os
 from collections import defaultdict
 
+# Ensure the src/ package is importable regardless of how the script is launched
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
 from src.build_tree import build_tree
@@ -11,6 +12,7 @@ from src.metrics import train_test_split, get_metrics
 from src.tree_to_json import tree_to_json
 
 app = Flask(__name__)
+# Holds the most recently trained tree between requests (single-user dev state)
 current_tree = None
 
 
@@ -26,6 +28,17 @@ def theory():
 
 @app.route("/train", methods=["POST"])
 def train():
+    """
+    Train an ID3 tree on an uploaded CSV and return visualisation data.
+
+    Expects multipart/form-data:
+      file      — CSV file
+      target    — name of the target column
+      test_size — fraction to hold out for evaluation (default 0.2)
+
+    Returns JSON with the tree structure, evaluation metrics, per-step build
+    metadata for the animation, and feature importances.
+    """
     global current_tree
 
     data = pd.read_csv(request.files["file"])
@@ -40,7 +53,8 @@ def train():
 
     m = get_metrics(test_data[target].tolist(), predict_dataset(current_tree, test_data))
 
-    # Compute feature importances from build steps
+    # Feature importance: accumulate total IG contributed by each feature
+    # across every node where it was chosen as the best split
     importances = defaultdict(float)
     for step in steps:
         if not step["is_leaf"] and step.get("feature_chosen"):
@@ -57,6 +71,8 @@ def train():
         "classes":          m['classes'],
         "train_size":       len(train_data),
         "test_size":        len(test_data),
+        # dropna removes NaN rows; astype(str) ensures JSON-serialisable values
+        # regardless of the original column dtype (int, float, etc.)
         "feature_values":   {f: sorted(data[f].dropna().astype(str).unique().tolist()) for f in features},
         "feature_importances": importances,
         "build_steps":      steps,
